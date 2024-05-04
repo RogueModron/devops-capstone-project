@@ -188,3 +188,8 @@ class TestAccountService(TestCase):
         response = self.client.get(BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(accounts), num_of_accounts)
+
+    def test_method_not_supported(self):
+        """It should return HTTP_405"""
+        response = self.client.post(BASE_URL + "/0")
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
