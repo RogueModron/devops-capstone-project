@@ -55,6 +55,7 @@ def create_accounts():
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
 
+
 ######################################################################
 # LIST ALL ACCOUNTS
 ######################################################################
@@ -71,6 +72,7 @@ def list_accounts():
         serialized_accounts.append(account.serialize())
     return jsonify(serialized_accounts), status.HTTP_200_OK
 
+
 ######################################################################
 # READ AN ACCOUNT
 ######################################################################
@@ -86,6 +88,7 @@ def read_accounts(account_id):
         abort(status.HTTP_404_NOT_FOUND)
     message = account.serialize()
     return message, status.HTTP_200_OK
+
 
 ######################################################################
 # UPDATE AN EXISTING ACCOUNT
