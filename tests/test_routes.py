@@ -168,3 +168,15 @@ class TestAccountService(TestCase):
         account.address = "New address boulevard, 666"
         response = self.client.put(BASE_URL + "/0", json=account.serialize())
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_delete_an_account(self):
+        """It should Delete an Account"""
+        accounts = self._create_accounts(2)
+        account_to_delete = accounts[0]
+        account_to_preserve = accounts[1]
+        response = self.client.delete(BASE_URL + "/" + str(account_to_delete.id))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        response = self.client.get(BASE_URL + "/" + str(account_to_delete.id))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        response = self.client.get(BASE_URL + "/" + str(account_to_preserve.id))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
