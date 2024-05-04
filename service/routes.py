@@ -121,7 +121,7 @@ def delete_accounts(account_id):
     This endpoint will delete an Account given the id
     """
     account = Account.find(account_id)
-    if not account is None:
+    if account is not None:
         account.delete()
     return "", status.HTTP_204_NO_CONTENT
 
