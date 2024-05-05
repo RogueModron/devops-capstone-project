@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: accounts-deployment
+  name: accounts-deployment
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: accounts-deployment
+  type: ClusterIP
+status:
+  loadBalancer: {}
