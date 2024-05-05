@@ -12,12 +12,15 @@ from tests.factories import AccountFactory
 from service.common import status  # HTTP Status Codes
 from service.models import db, Account, init_db
 from service.routes import app
+from service import talisman
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/postgres"
 )
 
 BASE_URL = "/accounts"
+
+HTTPS_ENVIRON = {'wsgi.url_scheme': 'https'}
 
 
 ######################################################################
@@ -34,6 +37,7 @@ class TestAccountService(TestCase):
         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
         app.logger.setLevel(logging.CRITICAL)
         init_db(app)
+        talisman.force_https = False
 
     @classmethod
     def tearDownClass(cls):
@@ -193,3 +197,21 @@ class TestAccountService(TestCase):
         """It should return HTTP_405"""
         response = self.client.post(BASE_URL + "/0")
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_security_headers(self):
+        """It should respond with security headers"""
+        response = self.client.get("/", None, environ_overrides = HTTPS_ENVIRON)
+        x_frame_options = response.headers.get("X-Frame-Options", None)
+        self.assertEqual(x_frame_options, "SAMEORIGIN")
+        x_content_type_options = response.headers.get("X-Content-Type-Options", None)
+        self.assertEqual(x_content_type_options, "nosniff")
+        content_security_policy = response.headers.get("Content-Security-Policy", None)
+        self.assertEqual(content_security_policy, "default-src 'self'; object-src 'none'")
+        referrer_policy = response.headers.get("Referrer-Policy", None)
+        self.assertEqual(referrer_policy, "strict-origin-when-cross-origin")
+
+    def test_cors_headers(self):
+        """It should respond with CORS headers"""
+        response = self.client.get("/", None, environ_overrides = HTTPS_ENVIRON)
+        access_control_allow_origin = response.headers.get("Access-Control-Allow-Origin", None)
+        self.assertEquals(access_control_allow_origin, "*")
