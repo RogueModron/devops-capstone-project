@@ -200,7 +200,7 @@ class TestAccountService(TestCase):
 
     def test_security_headers(self):
         """It should respond with security headers"""
-        response = self.client.get("/", None, environ_overrides = HTTPS_ENVIRON)
+        response = self.client.get("/", None, environ_overrides=HTTPS_ENVIRON)
         x_frame_options = response.headers.get("X-Frame-Options", None)
         self.assertEqual(x_frame_options, "SAMEORIGIN")
         x_content_type_options = response.headers.get("X-Content-Type-Options", None)
@@ -212,6 +212,6 @@ class TestAccountService(TestCase):
 
     def test_cors_headers(self):
         """It should respond with CORS headers"""
-        response = self.client.get("/", None, environ_overrides = HTTPS_ENVIRON)
+        response = self.client.get("/", None, environ_overrides=HTTPS_ENVIRON)
         access_control_allow_origin = response.headers.get("Access-Control-Allow-Origin", None)
         self.assertEquals(access_control_allow_origin, "*")
