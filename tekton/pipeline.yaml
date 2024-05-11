@@ -100,6 +100,6 @@ spec:
           cat deploy/deployment.yaml
           echo "Deploying to OpenShift..."
           oc apply -f deploy/
-          oc get pods -l app=accounts
+          oc get pods -l app=accounts-deployment
       runAfter:
         - build
